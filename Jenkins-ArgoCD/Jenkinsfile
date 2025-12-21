@@ -1,15 +1,18 @@
 pipeline {
     agent any
-
+	tools {
+		nodejs 'NodeJS 25.2.1'
+	}
     stages {
-        stage('Checkout Gitub') {
+        stage('Build') {
             steps {
                 git branch: 'main', credentialsId: 'GitOps-Token-Github', url: 'https://github.com/jeff541/devops_project.git'
             }
         }
-        stage('Test') {
+        stage('Install Node Dependencies') {
             steps {
-                echo 'Testing..'
+                echo 'Installing Node Dependencies....'
+				sh 'npm install'
             }
         }
         stage('Deploy') {
