@@ -12,12 +12,18 @@ pipeline {
         stage('Install Node Dependencies') {
             steps {
                 echo 'Installing Node Dependencies....'
-				sh 'npm install'
+				    dir('Jenkins-ArgoCD') {   
+                    sh 'npm install'
+                }
             }
         }
-        stage('Deploy') {
+        stage('Build the Docker Image') {
             steps {
-                echo 'Deploying....'
+                echo 'Building the Docker Image....'
+				
+				    dir('Jenkins-ArgoCD') {   
+                    sh 'docker build -t jeff541/devops_project:latest .'
+                }
             }
         }
     }
