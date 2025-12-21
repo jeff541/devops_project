@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Checkout Gitub') {
             steps {
-                echo 'Building..'
+                git branch: 'main', credentialsId: 'GitOps-Token-Github', url: 'https://github.com/jeff541/devops_project.git'
             }
         }
         stage('Test') {
