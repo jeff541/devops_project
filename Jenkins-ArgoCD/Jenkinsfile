@@ -25,7 +25,9 @@ pipeline {
                 echo 'Building the Docker Image....'
 				
 				    dir('Jenkins-ArgoCD') {   
-                    docker.build("${DOCKER_HUB_REPO}:latest")
+			script {
+                   docker.build("${DOCKER_HUB_REPO}:latest")
+						}
                 }
             }
         }
