@@ -25,7 +25,10 @@ pipeline {
 				
 				    dir('Jenkins-ArgoCD') {   
 			script {
-                   docker.build("${DOCKER_HUB_REPO}:latest")
+                  
+           sh '''
+        docker build -t jeff541/jenkins_argocd:latest .
+      '''
 						}
                 }
             }
