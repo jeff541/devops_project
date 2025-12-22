@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                git branch: 'main', credentialsId: 'GitOps-Token-Github', url: 'https://github.com/jeff541/devops_project.git'
+              git branch: 'main', credentialsId: 'GitOps-Token-Github', url: 'https://github.com/jeff541/devops_project.git'
             }
         }
         stage('Install Node Dependencies') {
