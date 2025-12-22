@@ -2,7 +2,9 @@ pipeline {
     agent any
 	tools {
 		nodejs 'NodeJS 25.2.1'
-		docker 'Docker'
+	}
+	environment {
+		DOCKER_HUB_REPO = 'jeff541/jenkins_argocd'
 	}
     stages {
         stage('Build') {
@@ -23,7 +25,7 @@ pipeline {
                 echo 'Building the Docker Image....'
 				
 				    dir('Jenkins-ArgoCD') {   
-                    sh 'docker build -t jeff541/devops_project:latest .'
+                    docker.build("${DOCKER_HUB_REPO}:latest")
                 }
             }
         }
