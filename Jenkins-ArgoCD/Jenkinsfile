@@ -4,8 +4,8 @@ pipeline {
 		nodejs 'NodeJS 25.2.1'
 	}
 	environment {
-		DOCKER_HUB_REPO = 'jeff541/jenkins_argocd'
-        DOCKER_HUB_CREDENTIALS_ID = 'Dockerhub'
+		DOCKER_HUB_REPO = 'jeffrudy/jenkins_argocd'
+        DOCKER_HUB_CREDENTIALS_ID = 'DOCKER_HUB_CREDENTIALS'
 	}
     stages {
         stage('Build') {
