@@ -35,7 +35,7 @@ pipeline {
         stage('Trivy Scan'){
         steps {
                 //    sh 'trivy image jeff541/jenkins_argocd:latest --severity HIGH,CRITICAL --no-progress --format table -o trivy-scan-report.txt'
-            sh 'trivy image jeff541/jenkins_argocd:latest --skip-db-update --severity HIGH,CRITICAL --no-progress --format table -o trivy-scan-report.txt'
+            sh 'trivy image jeffrudy/jenkins_argocd:latest --skip-db-update --severity HIGH,CRITICAL --no-progress --format table -o trivy-scan-report.txt'
         }
     }
     	stage('Push Image to DockerHub'){
