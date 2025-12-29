@@ -6,6 +6,7 @@ pipeline {
 	environment {
 		DOCKER_HUB_REPO = 'jeffrudy/jenkins_argocd'
         DOCKER_HUB_CREDENTIALS_ID = 'DOCKER_HUB_CREDENTIALS'
+        BUILD_VERSION = "v1.0.${BUILD_NUMBER}"
 	}
     stages {
         stage('Build') {
@@ -27,7 +28,7 @@ pipeline {
 				    dir('Jenkins-ArgoCD') {   
 			script {
                   
-                     dockerImage = docker.build("${DOCKER_HUB_REPO}:latest")
+                     dockerImage = docker.build("${DOCKER_HUB_REPO}:${BUILD_VERSION}")
 						}
                 }
             }
