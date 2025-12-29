@@ -6,7 +6,7 @@ pipeline {
 	environment {
 		DOCKER_HUB_REPO = 'jeffrudy/jenkins_argocd'
         DOCKER_HUB_CREDENTIALS_ID = 'DOCKER_HUB_CREDENTIALS'
-        IMAGE_TAG = BUILD_NUMBER
+        IMAGE_TAG = 'BUILD_NUMBER'
 	}
     stages {
         stage('Build') {
@@ -30,7 +30,7 @@ pipeline {
                   
                      dockerImage = docker.build("${DOCKER_HUB_REPO}:${IMAGE_TAG}")
                      """
-                     echo "Docker  Built: ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
+                     echo "Docker Image Built: ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
                      """
 						}
                 }
