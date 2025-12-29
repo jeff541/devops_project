@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-ingress
+  namespace: project-1
+  annotations:
+    kubernetes.io/ingress.class: "nginx" # Indispensable pour que NGINX Ingress traite cette ressource
+spec:
+  rules:
+    - host: argocd.local # J’ai changé en .local pour éviter les conflits avec le vrai dashboard.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix # Obligatoire en v1
+            backend:
+              service:
+                name: argocd-server # Nom du Service dans le namespace kubernetes-dashboard
+                port:
+                  number: 80 # Port HTTP du Dashboard (le Service expose 80 → 443 interne)

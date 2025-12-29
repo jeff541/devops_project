@@ -52,5 +52,13 @@ pipeline {
 					}
 				}
 			}
+    // kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml  installs ArgoCD in the argocd namespace
+    
+    /
+    // kubectl patch configmap argocd-cmd-params-cm \
+    // -n project-1 \
+    // --type merge \
+    // -p '{"data":{"server.insecure":"true"}}'
+
     }
 }
