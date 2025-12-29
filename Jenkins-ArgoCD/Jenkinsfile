@@ -6,6 +6,7 @@ pipeline {
 	environment {
 		DOCKER_HUB_REPO = 'jeffrudy/jenkins_argocd'
         DOCKER_HUB_CREDENTIALS_ID = 'DOCKER_HUB_CREDENTIALS'
+        IMAGE_TAG = BUILD_NUMBER
 	}
     stages {
         stage('Build') {
@@ -27,9 +28,9 @@ pipeline {
 				    dir('Jenkins-ArgoCD') {   
 			script {
                   
-                     dockerImage = docker.build("${DOCKER_HUB_REPO}:${BUILD_NUMBER}")
+                     dockerImage = docker.build("${DOCKER_HUB_REPO}:${IMAGE_TAG}")
                      """
-                     echo "Docker Image Built: ${DOCKER_HUB_REPO}:${BUILD_NUMBER}"
+                     echo "Docker Image Built: ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
                      """
 						}
                 }
@@ -46,7 +47,7 @@ pipeline {
 				script {
 					echo 'pushing docker image to DockerHub...'
 					docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIALS_ID}"){
-						dockerImage.push('${BUILD_NUMBER}')
+						dockerImage.push()
 						}
 					}
 				}
