@@ -47,7 +47,7 @@ pipeline {
 				script {
 					echo 'pushing docker image to DockerHub...'
 					docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIALS_ID}"){
-						dockerImage.push('latest')
+						dockerImage.push('${BUILD_VERSION}')
 						}
 					}
 				}
