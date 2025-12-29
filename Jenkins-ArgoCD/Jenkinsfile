@@ -30,7 +30,7 @@ pipeline {
                   
                      dockerImage = docker.build("${DOCKER_HUB_REPO}:${IMAGE_TAG}")
                      """
-                     echo "Docker Image Built: ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
+                     echo "Docker  Built: ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
                      """
 						}
                 }
