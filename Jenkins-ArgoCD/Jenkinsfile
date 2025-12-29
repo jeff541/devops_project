@@ -29,6 +29,9 @@ pipeline {
 			script {
                   
                      dockerImage = docker.build("${DOCKER_HUB_REPO}:${BUILD_VERSION}")
+                     """
+                     echo "Docker Image Built: ${DOCKER_HUB_REPO}:${BUILD_VERSION}"
+                     """
 						}
                 }
             }
