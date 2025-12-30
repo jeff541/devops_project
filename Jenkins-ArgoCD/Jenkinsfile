@@ -72,35 +72,14 @@ pipeline {
 		    }
    		stage('Apply Kubernetes Manifests & Sync App with ArgoCD'){
 			steps {
-			
 				script {
-				withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-					sh '''
-						set -e
-						export KUBECONFIG=${KUBECONFIG}
-						
-						# Désactiver l'affichage des commandes pour les opérations sensibles
-						set +x
-						
-						# Récupérer le mot de passe ArgoCD
-						ARGOCD_PASSWORD=$(kubectl get secret -n project-1 argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-						
-						# Connexion à ArgoCD
-						argocd login 192.168.49.2:80 \
-							--username admin \
-							--password "${ARGOCD_PASSWORD}" \
-							--insecure \
-							--grpc-web > /dev/null 2>&1
-						
-						# Réactiver l'affichage des commandes
-						set -x
-						
-						# Synchronisation de l'application
+					kubeconfig(credentialsId: 'kubeconfig', serverUrl: 'https://192.168.49.2:8443') {
+    						sh '''
+						argocd login 192.168.49.2:80 --username admin --password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --insecure
 						argocd app sync jenkins-argocd
-					'''
+						'''
+					}	
 				}
-			}
-
 			}
 		}
 		}
