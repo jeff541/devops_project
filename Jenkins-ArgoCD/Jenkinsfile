@@ -25,22 +25,22 @@ pipeline {
             steps {
                 echo 'Building the Docker Image....'
 				
-				    dir('Jenkins-ArgoCD') {   
-			script {
-                  
-                     dockerImage = docker.build("${DOCKER_HUB_REPO}:${IMAGE_TAG}")
-                     """
-                     echo "Docker Image Built: ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
-                     """
-						}
-                }
+                        dir('Jenkins-ArgoCD') {   
+                script {
+                    
+                        dockerImage = docker.build("${DOCKER_HUB_REPO}:${IMAGE_TAG}")
+                        """
+                        echo "Docker Image Built: ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
+                        """
+                            }
+                    }
             }
         }
         stage('Trivy Scan'){
-        steps {
-                //    sh 'trivy image jeff541/jenkins_argocd:latest --severity HIGH,CRITICAL --no-progress --format table -o trivy-scan-report.txt'
-            sh 'trivy image jeffrudy/jenkins_argocd:${IMAGE_TAG} --skip-db-update --severity HIGH,CRITICAL --no-progress --format table -o trivy-scan-report.txt'
-        }
+            steps {
+                    //    sh 'trivy image jeff541/jenkins_argocd:latest --severity HIGH,CRITICAL --no-progress --format table -o trivy-scan-report.txt'
+                sh 'trivy image jeffrudy/jenkins_argocd:${IMAGE_TAG} --skip-db-update --severity HIGH,CRITICAL --no-progress --format table -o trivy-scan-report.txt'
+            }
     }
     	stage('Push Image to DockerHub'){
 			steps {
@@ -52,13 +52,13 @@ pipeline {
 					}
 				}
 			}
-    // kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml  installs ArgoCD in the argocd namespace
-    
-    
-    // kubectl patch configmap argocd-cmd-params-cm \
-    // -n project-1 \
-    // --type merge \
-    // -p '{"data":{"server.insecure":"true"}}'
+            // kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml  installs ArgoCD in the argocd namespace
+            
+            
+            // kubectl patch configmap argocd-cmd-params-cm \
+            // -n project-1 \
+            // --type merge \
+            // -p '{"data":{"server.insecure":"true"}}'
     	stage('Install Kubectl & ArgoCD CLI'){
 			steps {
 				sh '''
@@ -68,20 +68,46 @@ pipeline {
 				curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
 				chmod +x /usr/local/bin/argocd
 				'''
-			}
-		}
-        		stage('Apply Kubernetes Manifests & Sync App with ArgoCD'){
-			steps {
-				script {
-					kubeconfig(credentialsId: 'kubeconfig', serverUrl: 'https://192.168.49.2:8443') {
-    						sh '''
-						argocd login 192.168.49.2:80 --username admin --password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --insecure
-						argocd app sync jenkins-argocd
-						'''
-					}	
-				}
-			}
+			    }
+		    }
+        stage('Sync App with ArgoCD') {
+            steps {
+                script {
+                    // Récupération du mot de passe ArgoCD via kubectl (kubectl est déjà installé)
+                    def argocdPassword = sh(
+                        script: 'kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d',
+                        returnStdout: true
+                    ).trim()
+
+                    // Login ArgoCD via l'Ingress (argocd.local) en mode insecure
+                    sh """
+                    echo "Connexion à ArgoCD via argocd.local..."
+                    argocd login argocd.local \
+                    --username admin \
+                    --password '${argocdPassword}' \
+                    --insecure \
+                    --grpc-web
+                    """
+
+                    // Synchronisation de l'application
+                    sh '''
+                    echo "Synchronisation de l'application jenkins-argocd..."
+                    argocd app sync jenkins-argocd --force --prune
+                    argocd app wait jenkins-argocd --health --sync
+                    echo "Application synchronisée avec succès !"
+                    '''
+                }
+            }
+       }
 		}
 
-    }
+    
+    post {
+		success {
+			echo 'Build & Deploy completed succesfully!'
+		}
+		failure {
+			echo 'Build & Deploy failed. Check logs.'
+		}
+	}
 }
