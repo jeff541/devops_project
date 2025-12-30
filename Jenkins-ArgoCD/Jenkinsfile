@@ -79,7 +79,7 @@ pipeline {
             export KUBECONFIG=${KUBECONFIG}
             
             # Récupérer le mot de passe ArgoCD
-            ARGOCD_PASSWORD=$(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+            ARGOCD_PASSWORD=$(kubectl get secret -n project-1 argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
             
             # Connexion à ArgoCD
             argocd login 192.168.49.2:80 \
