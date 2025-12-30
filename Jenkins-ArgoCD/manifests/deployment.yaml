@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: node-app
-          image: jeffrudy/node_app:latest
+          image: jeffrudy/jenkins_argocd:latest
           ports:
             - containerPort: 3000
 
