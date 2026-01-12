@@ -60,6 +60,9 @@ pipeline {
             // -n project-1 \
             // --type merge \
             // -p '{"data":{"server.insecure":"true"}}'
+
+
+
     	stage('Install Kubectl & ArgoCD CLI'){
 			steps {
 				sh '''
@@ -77,7 +80,7 @@ pipeline {
 				echo 'Applying Kubernetes Manifests...'
 					withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: '', credentialsId: 'kubeconfig', namespace: '', restrictKubeConfigAccess: false, serverUrl: 'https://192.168.49.2:8443') {
    					sh '''
-						argocd login 192.168.49.2:80 --username admin --password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --insecure
+						argocd login argocd.local --username admin --password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --insecure
 						argocd app sync jenkins-argocd
 						'''
 				}
