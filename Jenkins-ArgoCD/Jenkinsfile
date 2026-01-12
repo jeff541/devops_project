@@ -28,10 +28,11 @@ pipeline {
                         dir('Jenkins-ArgoCD') {   
                 script {
                     
-                           sh '''
-          which docker || echo "docker not installed"
-          docker --version || true
-        '''
+              dockerImage = docker.build("${DOCKER_HUB_REPO}:${IMAGE_TAG}")
+                        """
+                        echo "Docker Image Built: ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
+						"""
+
                             }
                     }
             }
