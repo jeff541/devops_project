@@ -81,8 +81,8 @@ pipeline {
 					withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: '', credentialsId: 'kubeconfig', namespace: '', restrictKubeConfigAccess: false, serverUrl: 'https://192.168.49.2:8443') {
    					sh '''
 						argocd login argocd.local --username admin --password $(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --insecure --grpc-web
-						argocd account can-i sync applications 'argocdjenkins' --grpc-web
-						argocd app sync argocdjenkins --grpc-web
+						argocd account can-i sync applications 'argocdjenkins'
+						argocd app sync argocdjenkins 
 						'''
 				}
 			}
