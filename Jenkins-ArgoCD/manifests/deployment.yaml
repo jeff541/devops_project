@@ -24,9 +24,29 @@ kind: Service
 metadata:
   name: my-service
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
-    - port: 80 
-      targetPort: 3000 
+    - port: 80
+      targetPort: 3000
   selector:
     app: node-app
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: node-app-ingress
+  namespace: argocd
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: node-app.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-service # Il pointe vers le nom du service ci-dessus
+                port:
+                  number: 80
